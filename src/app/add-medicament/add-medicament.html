@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <h1 class="text-center">Ajout d'un médicament</h1>
+      <div class="container">
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <h1 class="text-center">
+        {{ modeModification ? "Modifier un médicament" : "Ajout d'un médicament" }}
+      </h1>
+
+      <form (ngSubmit)="enregistrer()">
+        <div class="row g-3">
+          <div class="col-md-2">
+            <label class="form-label">Numéro</label>
+            <input type="number" class="form-control" [(ngModel)]="newMedicament.id"
+                   name="id" readonly>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label">Nom</label>
+            <input type="text" class="form-control" [(ngModel)]="newMedicament.nom"
+                   name="nom" required>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label">Catégorie</label>
+            <select class="form-select" [(ngModel)]="newMedicament.categorie" name="categorie">
+              @for (c of tab_categorie; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Date d'expiration</label>
+            <input type="date" class="form-control" [(ngModel)]="dateStr"
+                   name="dateExpiration" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Prix (en millimes)</label>
+            <input type="number" class="form-control" [(ngModel)]="newMedicament.prixMillimes"
+                   name="prixMillimes">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Stock</label>
+            <input type="number" class="form-control" [(ngModel)]="newMedicament.stock"
+                   name="stock">
+          </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" id="ordonnance"
+                     [(ngModel)]="newMedicament.ordonnance" name="ordonnance">
+              <label class="form-check-label" for="ordonnance">Ordonnance</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-success me-2">
+            {{ modeModification ? "Enregistrer les modifications" : "Ajouter" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+   
