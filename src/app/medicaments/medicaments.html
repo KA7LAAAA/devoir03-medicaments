@@ -3,6 +3,28 @@
     <div class="card-body">
       <h1>Liste des médicaments</h1>
       
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" (change)="choisirCategorie($event)">
+            <option value="">Toutes les catégories</option>
+            @for (c of tab_categorie; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Recherche par nom (keyup)</label>
+          <input type="text" class="form-control" placeholder="Nom du médicament..."
+                (keyup)="rechercherNom($event)">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Recherche par nom (pipe)</label>
+          <input type="text" class="form-control" placeholder="Nom du médicament..."
+                [(ngModel)]="recherchePipe">
+        </div>
+      </div>
       <table width="100%">
         <thead>
           <tr>
@@ -17,7 +39,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (m of tab_medicament; track m.id) {
+          @for (m of tab_filtre | filtreNom:recherchePipe; track m.id) {
             <tr>
               <td>{{ m.id }}</td>
               <td>{{ m.nom | uppercase }}</td>
