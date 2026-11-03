@@ -1,30 +1,47 @@
 <div class="container">
   <div class="card shadow mb-4">
     <div class="card-body">
-      <h1>Liste des médicaments</h1>
-      
 
-      <div class="row g-3 mb-3">
-        <div class="col-md-4">
-          <label class="form-label">Catégorie</label>
-          <select class="form-select" (change)="choisirCategorie($event)">
-            <option value="">Toutes les catégories</option>
-            @for (c of tab_categorie; track c) {
-              <option [value]="c">{{ c }}</option>
-            }
-          </select>
+      <h1 class="mb-4">Liste des médicaments</h1>
+
+      <!-- Barre de recherche selon l'option choisie dans le menu -->
+      @if ($any(this).typeRecherche === 'types') {
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label class="form-label text-warning fw-semibold"> Recherche par types (catégorie)</label>
+            <select class="form-select" (change)="choisirCategorie($event)">
+              <option value="">Toutes les catégories</option>
+              @for (c of tab_categorie; track c) {
+                <option [value]="c">{{ c }}</option>
+              }
+            </select>
+          </div>
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Recherche par nom (keyup)</label>
-          <input type="text" class="form-control" placeholder="Nom du médicament..."
-                (keyup)="rechercherNom($event)">
+      }
+
+      @if ($any(this).typeRecherche === 'keyup') {
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label class="form-label text-warning fw-semibold"> Recherche par nom (keyup)</label>
+            <input type="text" class="form-control"
+                   placeholder="Nom du médicament..."
+                   (keyup)="rechercherNom($event)">
+          </div>
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Recherche par nom (pipe)</label>
-          <input type="text" class="form-control" placeholder="Nom du médicament..."
-                [(ngModel)]="recherchePipe">
+      }
+
+      @if ($any(this).typeRecherche === 'pipe') {
+        <div class="row g-3 mb-3">
+          <div class="col-md-5">
+            <label class="form-label text-warning fw-semibold"> Recherche par nom (pipe)</label>
+            <input type="text" class="form-control"
+                   placeholder="Nom du médicament..."
+                   [(ngModel)]="recherchePipe">
+          </div>
         </div>
-      </div>
+      }
+
+      <!-- Tableau -->
       <table width="100%">
         <thead>
           <tr>
@@ -54,12 +71,10 @@
                 }
               </td>
               <td>{{ m.stock | number:'1.0' }}</td>
-              
               <td>
                 <a class="btn btn-primary btn-sm me-1" [routerLink]="['/add-medicament', m.id]">Modifier</a>
                 <button class="btn btn-danger btn-sm" (click)="supprimer(m)">Supprimer</button>
               </td>
-              
             </tr>
           }
           @empty {
@@ -69,6 +84,7 @@
           }
         </tbody>
       </table>
+
     </div>
   </div>
 </div>

@@ -15,8 +15,8 @@ export class AddMedicament {
   dateStr: string = '';
   modeModification: boolean = false;
   tab_categorie: string[] = [
-    "Antalgique", "Antibiotique", "Anti-inflammatoire",
-    "Bronchodilatateur", "Antidiarrhéique", "Vitamine"
+    'Antalgique', 'Antibiotique', 'Anti-inflammatoire',
+    'Bronchodilatateur', 'Antidiarrhéique', 'Vitamine'
   ];
 
   constructor(private p: Pharmacie, private route: ActivatedRoute, private router: Router) {
@@ -51,7 +51,7 @@ export class AddMedicament {
     this.newMedicament.dateExpiration = new Date(this.dateStr + 'T00:00:00');
 
     if (this.newMedicament.stock == null) {
-      delete this.newMedicament.stock;   // stock vide = pas de stock renseigné
+      delete this.newMedicament.stock;
     }
 
     if (this.modeModification) {
@@ -59,6 +59,10 @@ export class AddMedicament {
     } else {
       this.p.addMedicament(this.newMedicament);
     }
+    this.router.navigate(['/medicaments']);
+  }
+
+  annuler() {
     this.router.navigate(['/medicaments']);
   }
 }

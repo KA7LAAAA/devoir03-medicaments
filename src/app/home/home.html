@@ -1,0 +1,84 @@
+<div class="home-wrapper d-flex flex-column align-items-center justify-content-center min-vh-100">
+
+  <!-- Titre principal -->
+  <div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-dark">
+      <span class="text-success">💊</span> Gestion des Médicaments
+    </h1>
+    <p class="text-muted fs-5">Choisissez votre type de recherche pour accéder à la liste</p>
+  </div>
+
+  <!-- Card centrale -->
+  <div class="card shadow-lg home-card">
+    <div class="card-body p-5">
+
+      <!-- Bouton Ajout médicament en haut -->
+      <div class="text-end mb-4">
+        <button class="btn btn-success btn-lg px-4" (click)="allerVersAjout()">
+          <i class="bi bi-plus-circle me-2"></i>➕ Ajout médicament
+        </button>
+      </div>
+
+      <!-- Sélecteur de type de recherche -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold fs-5">Type de recherche</label>
+        <select class="form-select form-select-lg" [(ngModel)]="typeRecherche">
+          <option value="">-- Choisir un type de recherche --</option>
+          <option value="types">Recherche par types (catégories)</option>
+          <option value="keyup">Recherche par nom (keyup)</option>
+          <option value="pipe">Recherche par nom (pipe)</option>
+        </select>
+      </div>
+
+      <!-- Barre de recherche selon le type choisi -->
+      @if (typeRecherche === 'types') {
+        <div class="alert alert-info d-flex align-items-center gap-2 mb-4">
+          <span class="fs-4">🗂️</span>
+          <div>
+            <strong>Recherche par catégorie</strong>
+            <p class="mb-0 text-muted">Un menu déroulant vous permettra de filtrer par catégorie de médicament.</p>
+          </div>
+        </div>
+      }
+
+      @if (typeRecherche === 'keyup') {
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Aperçu — Recherche par nom (keyup)</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text">🔍</span>
+            <input type="text" class="form-control"
+                   placeholder="Nom du médicament..."
+                   disabled
+                   title="La recherche est disponible dans la liste">
+          </div>
+          <small class="text-muted">La saisie filtre instantanément via l'événement keyup.</small>
+        </div>
+      }
+
+      @if (typeRecherche === 'pipe') {
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Aperçu — Recherche par nom (pipe)</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text">🔍</span>
+            <input type="text" class="form-control"
+                   placeholder="Nom du médicament..."
+                   disabled
+                   title="La recherche est disponible dans la liste">
+          </div>
+          <small class="text-muted">La saisie filtre via un Pipe Angular (filtreNom).</small>
+        </div>
+      }
+
+      <!-- Bouton accéder à la liste -->
+      <div class="d-grid mt-3">
+        <button class="btn btn-primary btn-lg"
+                [disabled]="typeRecherche === ''"
+                (click)="allerVersListe()">
+          📋 Accéder à la liste des médicaments
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

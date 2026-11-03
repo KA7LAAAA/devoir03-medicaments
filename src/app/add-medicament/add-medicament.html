@@ -1,12 +1,9 @@
-<div class="container">
+<div class="container mt-4">
   <div class="card shadow mb-4">
     <div class="card-body">
-      <h1 class="text-center">Ajout d'un médicament</h1>
-      <div class="container">
-  <div class="card shadow mb-4">
-    <div class="card-body">
-      <h1 class="text-center">
-        {{ modeModification ? "Modifier un médicament" : "Ajout d'un médicament" }}
+
+      <h1 class="text-center mb-4">
+        {{ modeModification ? " Modifier un médicament" : " Ajout d'un médicament" }}
       </h1>
 
       <form (ngSubmit)="enregistrer()">
@@ -19,7 +16,7 @@
           <div class="col-md-5">
             <label class="form-label">Nom</label>
             <input type="text" class="form-control" [(ngModel)]="newMedicament.nom"
-                   name="nom" required>
+                   name="nom" required placeholder="Nom du médicament">
           </div>
           <div class="col-md-5">
             <label class="form-label">Catégorie</label>
@@ -37,12 +34,12 @@
           <div class="col-md-3">
             <label class="form-label">Prix (en millimes)</label>
             <input type="number" class="form-control" [(ngModel)]="newMedicament.prixMillimes"
-                   name="prixMillimes">
+                   name="prixMillimes" placeholder="ex: 2500">
           </div>
           <div class="col-md-3">
             <label class="form-label">Stock</label>
             <input type="number" class="form-control" [(ngModel)]="newMedicament.stock"
-                   name="stock">
+                   name="stock" placeholder="ex: 100">
           </div>
           <div class="col-md-2 d-flex align-items-end">
             <div class="form-check">
@@ -53,13 +50,16 @@
           </div>
         </div>
 
-        <div class="mt-4">
-          <button type="submit" class="btn btn-success me-2">
-            {{ modeModification ? "Enregistrer les modifications" : "Ajouter" }}
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-success">
+            {{ modeModification ? " Enregistrer les modifications" : " Ajouter" }}
+          </button>
+           <button type="reset" class="btn btn-secondary">
+             Annuler
           </button>
         </div>
       </form>
+
     </div>
   </div>
 </div>
-   

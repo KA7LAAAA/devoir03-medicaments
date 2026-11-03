@@ -3,10 +3,23 @@
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/medicaments">MEDICAMENTS</a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-link" routerLink="/medicaments">Médicaments</a>
-        <a class="nav-link" routerLink="/add-medicament">Ajout médicament</a>
+      <div class="navbar-nav me-auto">
+        <a class="nav-link" routerLink="/medicaments" routerLinkActive="active">Médicaments</a>
       </div>
+
+      <!-- Liste déroulante dans la navbar à la place du bouton Ajout médicament -->
+      <div class="d-flex align-items-center">
+        <select class="form-select form-select-sm navbar-select"
+                [(ngModel)]="optionChoisie"
+                (change)="onOptionChange()">
+          <option value="">-- Choisir --</option>
+          <option value="types">Recherche par types</option>
+          <option value="keyup">Recherche par nom (keyup)</option>
+          <option value="pipe">Recherche par nom (pipe)</option>
+          <option value="ajout"> Ajout médicament</option>
+        </select>
+      </div>
+
     </div>
   </div>
 </nav>
