@@ -5,6 +5,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Medicament } from '../model/model-medicament';
 import { Pharmacie } from '../services/pharmacie';
 import { FiltreNomPipe } from '../pipes/filtre-nom-pipe';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-medicaments',
@@ -21,23 +22,28 @@ export class Medicaments {
   rechercheNom: string = '';    // recherche avec keyup
   recherchePipe: string = '';   // recherche avec le pipe
 
-  // type reçu depuis le menu via query param : 'types' | 'keyup' | 'pipe' | ''
+  // type de recherche sélectionné : 'types' | 'keyup' | 'pipe' | ''
   typeRecherche: string = '';
 
-  constructor(private p: Pharmacie, private route: ActivatedRoute) {
+  constructor(private p: Pharmacie, public auth: Auth, private route: ActivatedRoute) {
     this.tab_medicament = p.listMedicaments();
     this.tab_categorie = [...new Set(this.tab_medicament.map(m => m.categorie))];
     this.tab_filtre = this.tab_medicament;
 
-    // Écouter les changements de query params (quand on choisit dans le menu)
+    // Écouter les query params au cas où on arrive avec ?type=...
     this.route.queryParams.subscribe(params => {
-      this.typeRecherche = params['type'] ?? '';
-      // Réinitialiser les filtres à chaque changement de type
-      this.categorieChoisie = '';
-      this.rechercheNom = '';
-      this.recherchePipe = '';
-      this.tab_filtre = this.tab_medicament;
+      if (params['type']) {
+        this.typeRecherche = params['type'];
+        this.onTypeRechercheChange();
+      }
     });
+  }
+
+  onTypeRechercheChange() {
+    this.categorieChoisie = '';
+    this.rechercheNom = '';
+    this.recherchePipe = '';
+    this.tab_filtre = this.tab_medicament;
   }
 
   // Recherche par catégorie

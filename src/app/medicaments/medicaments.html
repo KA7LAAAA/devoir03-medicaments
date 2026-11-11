@@ -4,13 +4,13 @@
 
       <h1 class="mb-4">Liste des médicaments</h1>
 
-      <!-- Barre de recherche selon l'option choisie dans le menu -->
-      @if ($any(this).typeRecherche === 'types') {
+      <!-- Barre de recherche selon l'option choisie dans la barre verte en haut -->
+      @if (typeRecherche === 'types') {
         <div class="row g-3 mb-3">
           <div class="col-md-5">
-            <label class="form-label text-warning fw-semibold"> Recherche par types (catégorie)</label>
+            <label class="form-label text-warning fw-semibold"> Recherche par types</label>
             <select class="form-select" (change)="choisirCategorie($event)">
-              <option value="">Toutes les catégories</option>
+              <option value="">Tous les types</option>
               @for (c of tab_categorie; track c) {
                 <option [value]="c">{{ c }}</option>
               }
@@ -19,10 +19,10 @@
         </div>
       }
 
-      @if ($any(this).typeRecherche === 'keyup') {
+      @if (typeRecherche === 'keyup') {
         <div class="row g-3 mb-3">
           <div class="col-md-5">
-            <label class="form-label text-warning fw-semibold"> Recherche par nom (keyup)</label>
+            <label class="form-label text-warning fw-semibold">Recherche par nom (keyup)</label>
             <input type="text" class="form-control"
                    placeholder="Nom du médicament..."
                    (keyup)="rechercherNom($event)">
@@ -30,7 +30,7 @@
         </div>
       }
 
-      @if ($any(this).typeRecherche === 'pipe') {
+      @if (typeRecherche === 'pipe') {
         <div class="row g-3 mb-3">
           <div class="col-md-5">
             <label class="form-label text-warning fw-semibold"> Recherche par nom (pipe)</label>
@@ -47,7 +47,7 @@
           <tr>
             <th>ID</th>
             <th>Nom</th>
-            <th>Catégorie</th>
+            <th>Types</th>
             <th>Date d'expiration</th>
             <th>Prix</th>
             <th>Ordonnance</th>
@@ -72,8 +72,12 @@
               </td>
               <td>{{ m.stock | number:'1.0' }}</td>
               <td>
-                <a class="btn btn-primary btn-sm me-1" [routerLink]="['/add-medicament', m.id]">Modifier</a>
-                <button class="btn btn-danger btn-sm" (click)="supprimer(m)">Supprimer</button>
+                @if (auth.estAdmin()) {
+                  <a class="btn btn-primary btn-sm me-1" [routerLink]="['/add-medicament', m.id]">Modifier</a>
+                  <button class="btn btn-danger btn-sm" (click)="supprimer(m)">Supprimer</button>
+                } @else {
+                  <span class="text-muted fst-italic">Lecture seule</span>
+                }
               </td>
             </tr>
           }

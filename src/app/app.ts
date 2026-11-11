@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Menu } from './menu/menu';
+import { Auth } from './services/auth';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,10 @@ import { Menu } from './menu/menu';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App { }
+export class App implements OnInit {
+  constructor(private auth: Auth) {}
+
+  ngOnInit() {
+    this.auth.chargerSession();
+  }
+}

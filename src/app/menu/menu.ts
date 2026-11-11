@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 export class Menu {
   optionChoisie: string = '';
 
-  constructor(private router: Router) {}
+  constructor(public auth: Auth, private router: Router) { }
 
   onOptionChange() {
     if (!this.optionChoisie) return;
@@ -23,7 +24,12 @@ export class Menu {
         queryParams: { type: this.optionChoisie }
       });
     }
-    // Reset après navigation
+    // Réinitialiser la sélection
     this.optionChoisie = '';
+  }
+
+  deconnecter() {
+    this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }

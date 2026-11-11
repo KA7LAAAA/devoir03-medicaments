@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Medicament } from '../model/model-medicament';
 import { Pharmacie } from '../services/pharmacie';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-add-medicament',
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './add-medicament.html',
   styleUrl: './add-medicament.css'
 })
@@ -19,7 +21,12 @@ export class AddMedicament {
     'Bronchodilatateur', 'Antidiarrhéique', 'Vitamine'
   ];
 
-  constructor(private p: Pharmacie, private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private p: Pharmacie,
+    public auth: Auth,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     const idParam = this.route.snapshot.paramMap.get('id');
     const existant = idParam ? this.p.getMedicament(Number(idParam)) : undefined;
 

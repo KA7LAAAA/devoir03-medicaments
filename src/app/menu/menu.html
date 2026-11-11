@@ -3,21 +3,37 @@
   <div class="container-fluid">
     <a class="navbar-brand" routerLink="/medicaments">MEDICAMENTS</a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav me-auto">
-        <a class="nav-link" routerLink="/medicaments" routerLinkActive="active">Médicaments</a>
+
+      <div class="navbar-nav me-auto align-items-center">
+        @if (auth.estConnecte()) {
+          <a class="nav-link" routerLink="/medicaments" routerLinkActive="active">Médicaments</a>
+
+          <!-- Liste de sélection au lieu du bouton Ajout médicament -->
+          <div class="ms-3">
+            <select class="form-select form-select-sm navbar-select"
+                    [(ngModel)]="optionChoisie"
+                    (change)="onOptionChange()">
+              <option value="">-- Choisir --</option>
+              <option value="types">Recherche par types</option>
+              <option value="keyup">Recherche par nom (keyup)</option>
+              <option value="pipe">Recherche par nom (pipe)</option>
+              @if (auth.estAdmin()) {
+                <option value="ajout">➕ Ajout médicament</option>
+              }
+            </select>
+          </div>
+        }
       </div>
 
-      <!-- Liste déroulante dans la navbar à la place du bouton Ajout médicament -->
-      <div class="d-flex align-items-center">
-        <select class="form-select form-select-sm navbar-select"
-                [(ngModel)]="optionChoisie"
-                (change)="onOptionChange()">
-          <option value="">-- Choisir --</option>
-          <option value="types">Recherche par types</option>
-          <option value="keyup">Recherche par nom (keyup)</option>
-          <option value="pipe">Recherche par nom (pipe)</option>
-          <option value="ajout"> Ajout médicament</option>
-        </select>
+      <div class="navbar-nav ms-auto align-items-center">
+        @if (auth.estConnecte()) {
+          <span class="navbar-text me-3">
+            👤 {{ auth.utilisateurConnecte?.username }} ({{ auth.utilisateurConnecte?.role }})
+          </span>
+          <button class="btn btn-outline-light btn-sm" (click)="deconnecter()">Déconnexion</button>
+        } @else {
+          <a class="nav-link" routerLink="/login" routerLinkActive="active">Connexion</a>
+        }
       </div>
 
     </div>
