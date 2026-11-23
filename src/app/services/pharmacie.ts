@@ -13,8 +13,8 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class Pharmacie {
-  apiURL: string = 'http://localhost:8080/medicaments/api';
-  apiURLCat: string = 'http://localhost:8080/medicaments/cat';
+  apiURL: string = 'http://localhost:8090/medicaments/api';
+  apiURLCat: string = 'http://localhost:8090/medicaments/cat';
 
   constructor(private http: HttpClient) { }
 
