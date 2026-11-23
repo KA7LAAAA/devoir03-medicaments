@@ -11,8 +11,8 @@ export interface Utilisateur {
 })
 export class Auth {
   private utilisateurs: Utilisateur[] = [
-    { username: 'admin', password: 'admin123', role: 'admin' },
-    { username: 'user', password: 'user123', role: 'user' }
+    { username: 'admin', password: '123', role: 'admin' },
+    { username: 'yessin', password: '123', role: 'user' }
   ];
 
   utilisateurConnecte: Utilisateur | null = null;
@@ -23,7 +23,7 @@ export class Auth {
     this.chargerSession();
   }
 
-  // Étape 5 : Récupérer la session depuis le LocalStorage (survit au refresh)
+  // Récupérer 
   chargerSession() {
     if (typeof window !== 'undefined' && window.localStorage) {
       const u = localStorage.getItem('user_connecte');
@@ -41,7 +41,7 @@ export class Auth {
     }
   }
 
-  // Étape 5 : Sauvegarder la session dans le LocalStorage lors du login
+  //  Sauvegarder 
   login(username: string, password: string): boolean {
     const u = this.utilisateurs.find(
       x => x.username === username && x.password === password
@@ -61,7 +61,7 @@ export class Auth {
     return false;
   }
 
-  // Étape 5 : Supprimer la session du LocalStorage lors du logout
+  // Supprimer 
   logout() {
     this.utilisateurConnecte = null;
     this.isloggedIn = false;

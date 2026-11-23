@@ -16,10 +16,7 @@ export class AddMedicament {
   newMedicament: Medicament = new Medicament();
   dateStr: string = '';
   modeModification: boolean = false;
-  tab_categorie: string[] = [
-    'Antalgique', 'Antibiotique', 'Anti-inflammatoire',
-    'Bronchodilatateur', 'Antidiarrhéique', 'Vitamine'
-  ];
+  tab_categorie: string[] = [];
 
   constructor(
     private p: Pharmacie,
@@ -27,6 +24,7 @@ export class AddMedicament {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.tab_categorie = this.p.listeCategories().map(c => c.nomCat);
     const idParam = this.route.snapshot.paramMap.get('id');
     const existant = idParam ? this.p.getMedicament(Number(idParam)) : undefined;
 

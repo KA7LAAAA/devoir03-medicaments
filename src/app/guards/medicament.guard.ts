@@ -6,12 +6,11 @@ export const medicamentGuard: CanActivateFn = (route, state) => {
   const auth = inject(Auth);
   const router = inject(Router);
 
-  // Autoriser pendant le prerendering côté serveur
   if (typeof window === 'undefined') {
     return true;
   }
 
-  // Vérifier si l'utilisateur est admin
+  
   if (auth.estAdmin()) {
     return true;
   } else {

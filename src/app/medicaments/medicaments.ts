@@ -27,7 +27,7 @@ export class Medicaments {
 
   constructor(private p: Pharmacie, public auth: Auth, private route: ActivatedRoute) {
     this.tab_medicament = p.listMedicaments();
-    this.tab_categorie = [...new Set(this.tab_medicament.map(m => m.categorie))];
+    this.tab_categorie = this.p.listeCategories().map(c => c.nomCat);
     this.tab_filtre = this.tab_medicament;
 
     // Écouter les query params au cas où on arrive avec ?type=...

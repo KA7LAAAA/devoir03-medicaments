@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-body">
+
+      @if (auth.estAdmin()) {
+        <div class="col-sm-4 col-md-4 col-lg-4 mb-4">
+          <app-update-categorie
+            [categorie]="updatedCat"
+            (categorieUpdated)="categorieUpdated($event)"
+            [ajout]="ajout">
+          </app-update-categorie>
+        </div>
+      }
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nom Catégorie</th>
+            @if (auth.estAdmin()) {
+              <th>Action</th>
+            }
+          </tr>
+        </thead>
+        @for (cat of categories; track cat.idCat) {
+          <tbody>
+            <tr>
+              <td>{{ cat.idCat }}</td>
+              <td>{{ cat.nomCat }}</td>
+              @if (auth.estAdmin()) {
+                <td>
+                  <a class="btn btn-success btn-sm me-2" (click)="updateCat(cat)">Editer</a>
+                  <button class="btn btn-danger btn-sm" (click)="supprimerCat(cat)">Supprimer</button>
+                </td>
+              }
+            </tr>
+          </tbody>
+        }
+      </table>
+
+    </div>
+  </div>
+</div>

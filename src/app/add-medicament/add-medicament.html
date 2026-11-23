@@ -1,74 +1,57 @@
 <div class="container mt-4">
-  <div class="card shadow mb-4">
-    <div class="card-body">
-
-      <h1 class="text-center mb-4">
-        {{ modeModification ? "✏️ Modifier un médicament" : " Ajout d'un médicament" }}
-      </h1>
-
-      @if (!auth.estAdmin()) {
-        <div class="alert alert-danger text-center">
-          ⚠️ Accès refusé : vous devez être connecté en tant qu'administrateur pour ajouter ou modifier un médicament.
-        </div>
-        <div class="text-center">
-          <button class="btn btn-secondary" (click)="annuler()">Retour à la liste</button>
-        </div>
-      } @else {
-        <form (ngSubmit)="enregistrer()">
-          <div class="row g-3">
-            <div class="col-md-2">
-              <label class="form-label">Numéro</label>
-              <input type="number" class="form-control" [(ngModel)]="newMedicament.id"
-                     name="id" readonly>
-            </div>
-            <div class="col-md-5">
-              <label class="form-label">Nom</label>
-              <input type="text" class="form-control" [(ngModel)]="newMedicament.nom"
-                     name="nom" required placeholder="Nom du médicament">
-            </div>
-            <div class="col-md-5">
-              <label class="form-label">Types</label>
-              <select class="form-select" [(ngModel)]="newMedicament.categorie" name="categorie">
-                @for (c of tab_categorie; track c) {
-                  <option [value]="c">{{ c }}</option>
-                }
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Date d'expiration</label>
-              <input type="date" class="form-control" [(ngModel)]="dateStr"
-                     name="dateExpiration" required>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Prix (en millimes)</label>
-              <input type="number" class="form-control" [(ngModel)]="newMedicament.prixMillimes"
-                     name="prixMillimes" placeholder="ex: 2500">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Stock</label>
-              <input type="number" class="form-control" [(ngModel)]="newMedicament.stock"
-                     name="stock" placeholder="ex: 100">
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-              <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="ordonnance"
-                       [(ngModel)]="newMedicament.ordonnance" name="ordonnance">
-                <label class="form-check-label" for="ordonnance">Ordonnance</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-success">
-              {{ modeModification ? " Enregistrer les modifications" : "Ajouter" }}
-            </button>
-            <button type="button" class="btn btn-secondary" (click)="annuler()">
-              Annuler
-            </button>
-          </div>
-        </form>
-      }
-
-    </div>
+  <div>
+    <h2>{{ modeModification ? "Modifier un Médicament :" : "Ajouter un Médicament :" }}</h2>
   </div>
+
+  <form (ngSubmit)="enregistrer()">
+    <div class="col-sm-2 col-md-2 col-lg-2 mb-2">
+      <label>ID Médicament</label>
+      <input type="text" [(ngModel)]="newMedicament.id" name="id" class="form-control" readonly>
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
+      <label>Nom Médicament</label>
+      <input type="text" [(ngModel)]="newMedicament.nom" name="nom" class="form-control" required placeholder="Nom du médicament">
+    </div>
+
+    <div class="col-sm-2 col-md-2 col-lg-2 mb-2">
+      <label>Prix (millimes)</label>
+      <input type="number" [(ngModel)]="newMedicament.prixMillimes" name="prixMillimes" class="form-control" placeholder="ex: 2500">
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
+      <label>Date d'expiration</label>
+      <input type="date" [(ngModel)]="dateStr" name="dateExpiration" class="form-control" required>
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
+      <label>Catégorie</label>
+      <select class="form-control form-control-lg" name="categorie" [(ngModel)]="newMedicament.categorie">
+        @for (c of tab_categorie; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="col-sm-2 col-md-2 col-lg-2 mb-2">
+      <label>Stock</label>
+      <input type="number" [(ngModel)]="newMedicament.stock" name="stock" class="form-control" placeholder="ex: 100">
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-3">
+      <div class="form-check mt-2">
+        <input type="checkbox" class="form-check-input" id="ordonnance" [(ngModel)]="newMedicament.ordonnance" name="ordonnance">
+        <label class="form-check-label" for="ordonnance">Ordonnance obligatoire</label>
+      </div>
+    </div>
+
+    <div class="mt-2">
+      <button type="submit" class="btn btn-success me-2">
+        {{ modeModification ? "Modifier" : "Ajouter" }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="annuler()">
+        Annuler
+      </button>
+    </div>
+  </form>
 </div>

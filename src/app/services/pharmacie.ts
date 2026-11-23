@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Medicament } from '../model/model-medicament';
+import { Categorie } from '../model/categorie.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,16 @@ export class Pharmacie {
       ordonnance: false, stock: 80 }
   ];
 
+  categories: Categorie[] = [
+    { idCat: 1, nomCat: "Antalgique" },
+    { idCat: 2, nomCat: "Antibiotique" },
+    { idCat: 3, nomCat: "Anti-inflammatoire" },
+    { idCat: 4, nomCat: "Bronchodilatateur" },
+    { idCat: 5, nomCat: "Antidiarrhéique" },
+    { idCat: 6, nomCat: "Vitamine" }
+  ];
+
+  // Gestion des médicaments
   listMedicaments(): Medicament[] {
     return this.tab_medicament;
   }
@@ -52,6 +63,38 @@ export class Pharmacie {
     const pos = this.tab_medicament.indexOf(m);
     if (pos !== -1) {
       this.tab_medicament.splice(pos, 1);
+    }
+  }
+
+  // Gestion des catégories (CRUD en mémoire selon Devoir 10 / Mini Projet sprint 02)
+  listeCategories(): Categorie[] {
+    return this.categories;
+  }
+
+  consulterCategorie(id: number): Categorie | undefined {
+    return this.categories.find(c => c.idCat === id);
+  }
+
+  ajouterCategorie(cat: Categorie): Categorie {
+    const nextIdCat = this.categories.length > 0
+      ? Math.max(...this.categories.map(c => c.idCat)) + 1
+      : 1;
+    cat.idCat = nextIdCat;
+    this.categories.push(cat);
+    return cat;
+  }
+
+  updateCategorie(cat: Categorie) {
+    const pos = this.categories.findIndex(c => c.idCat === cat.idCat);
+    if (pos !== -1) {
+      this.categories[pos] = cat;
+    }
+  }
+
+  supprimerCategorie(cat: Categorie) {
+    const pos = this.categories.indexOf(cat);
+    if (pos !== -1) {
+      this.categories.splice(pos, 1);
     }
   }
 }

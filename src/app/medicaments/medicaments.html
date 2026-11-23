@@ -1,62 +1,58 @@
-<div class="container">
+<div class="container mt-4">
+
+  <!-- Recherche par catégorie (style professeur rechercheParCategorie) -->
+  @if (typeRecherche === 'types') {
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-4">
+      <label class="form-label fw-bold">Catégories</label>
+      <select class="form-control form-control-lg" (change)="choisirCategorie($event)">
+        <option value="">Toutes les catégories</option>
+        @for (c of tab_categorie; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </div>
+  }
+
+  <!-- Recherche par nom en tapant (style professeur rechercheParNom) -->
+  @if (typeRecherche === 'keyup') {
+    <form class="form-inline mb-3">
+      <div class="form-group col-sm-4 col-md-4 col-lg-4 mb-3">
+        <label class="form-label fw-bold">Nom Médicament en tapant</label>
+        <input class="form-control" placeholder="Entrez un nom..." (keyup)="rechercherNom($event)">
+      </div>
+    </form>
+  }
+
+  <!-- Recherche par nom avec pipe (style professeur searchFilter) -->
+  @if (typeRecherche === 'pipe') {
+    <form class="form-inline mb-3">
+      <div class="form-group col-sm-4 col-md-4 col-lg-4 mb-3">
+        <label class="form-label fw-bold">Nom Médicament en tapant</label>
+        <input class="form-control" placeholder="Entrez un nom..." [(ngModel)]="recherchePipe" name="recherchePipe">
+      </div>
+    </form>
+  }
+
+  <!-- Tableau des médicaments (style professeur produits) -->
   <div class="card shadow mb-4">
     <div class="card-body">
-
-      <h1 class="mb-4">Liste des médicaments</h1>
-
-      <!-- Barre de recherche selon l'option choisie dans la barre verte en haut -->
-      @if (typeRecherche === 'types') {
-        <div class="row g-3 mb-3">
-          <div class="col-md-5">
-            <label class="form-label text-warning fw-semibold"> Recherche par types</label>
-            <select class="form-select" (change)="choisirCategorie($event)">
-              <option value="">Tous les types</option>
-              @for (c of tab_categorie; track c) {
-                <option [value]="c">{{ c }}</option>
-              }
-            </select>
-          </div>
-        </div>
-      }
-
-      @if (typeRecherche === 'keyup') {
-        <div class="row g-3 mb-3">
-          <div class="col-md-5">
-            <label class="form-label text-warning fw-semibold">Recherche par nom (keyup)</label>
-            <input type="text" class="form-control"
-                   placeholder="Nom du médicament..."
-                   (keyup)="rechercherNom($event)">
-          </div>
-        </div>
-      }
-
-      @if (typeRecherche === 'pipe') {
-        <div class="row g-3 mb-3">
-          <div class="col-md-5">
-            <label class="form-label text-warning fw-semibold"> Recherche par nom (pipe)</label>
-            <input type="text" class="form-control"
-                   placeholder="Nom du médicament..."
-                   [(ngModel)]="recherchePipe">
-          </div>
-        </div>
-      }
-
-      <!-- Tableau -->
-      <table width="100%">
+      <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>Id</th>
             <th>Nom</th>
-            <th>Types</th>
+            <th>Catégorie</th>
             <th>Date d'expiration</th>
             <th>Prix</th>
             <th>Ordonnance</th>
             <th>Stock</th>
-            <th>Action</th>
+            @if (auth.estAdmin()) {
+              <th>Actions</th>
+            }
           </tr>
         </thead>
-        <tbody>
-          @for (m of tab_filtre | filtreNom:recherchePipe; track m.id) {
+        @for (m of tab_filtre | filtreNom:recherchePipe; track m.id) {
+          <tbody>
             <tr>
               <td>{{ m.id }}</td>
               <td>{{ m.nom | uppercase }}</td>
@@ -71,24 +67,23 @@
                 }
               </td>
               <td>{{ m.stock | number:'1.0' }}</td>
-              <td>
-                @if (auth.estAdmin()) {
-                  <a class="btn btn-primary btn-sm me-1" [routerLink]="['/add-medicament', m.id]">Modifier</a>
-                  <button class="btn btn-danger btn-sm" (click)="supprimer(m)">Supprimer</button>
-                } @else {
-                  <span class="text-muted fst-italic">Lecture seule</span>
-                }
-              </td>
+              @if (auth.estAdmin()) {
+                <td>
+                  <a class="btn btn-danger btn-sm me-1" (click)="supprimer(m)">Supprimer</a>
+                  <a class="btn btn-success btn-sm" [routerLink]="['/add-medicament', m.id]">Modifier</a>
+                </td>
+              }
             </tr>
-          }
-          @empty {
+          </tbody>
+        }
+        @empty {
+          <tbody>
             <tr>
-              <td colspan="8">Aucun médicament</td>
+              <td colspan="8" class="text-center">Aucun médicament</td>
             </tr>
-          }
-        </tbody>
+          </tbody>
+        }
       </table>
-
     </div>
   </div>
 </div>
