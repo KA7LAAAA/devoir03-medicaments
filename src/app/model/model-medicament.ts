@@ -1,9 +1,14 @@
+import { Categorie } from './categorie.model';
+
 export class Medicament {
   id!: number;
+  idMedicament?: number;
   nom!: string;
-  categorie!: string;
+  nomMedicament?: string;
+  categorie!: Categorie | string | any;
   dateExpiration!: Date;
-  prixMillimes!: number;   // prix en millimes (1 DT = 1000 millimes)
-  ordonnance!: boolean;    // ordonnance obligatoire ou non
-  stock?: number;          // quantité en stock, optionnelle
+  prixMillimes!: number;
+  prixMedicament?: number;
+  ordonnance!: boolean;
+  stock?: number;
 }

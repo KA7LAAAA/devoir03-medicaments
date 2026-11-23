@@ -51,14 +51,14 @@
             }
           </tr>
         </thead>
-        @for (m of tab_filtre | filtreNom:recherchePipe; track m.id) {
+        @for (m of tab_filtre | filtreNom:recherchePipe; track (m.id || m.idMedicament)) {
           <tbody>
             <tr>
-              <td>{{ m.id }}</td>
-              <td>{{ m.nom | uppercase }}</td>
-              <td>{{ m.categorie }}</td>
+              <td>{{ m.id || m.idMedicament }}</td>
+              <td>{{ (m.nom || m.nomMedicament) | uppercase }}</td>
+              <td>{{ m.categorie?.nomCat || m.categorie }}</td>
               <td>{{ m.dateExpiration | date:'dd/MM/yyyy' }}</td>
-              <td>{{ convertPrix(m.prixMillimes) }}</td>
+              <td>{{ convertPrix(m.prixMillimes || m.prixMedicament || 0) }}</td>
               <td>
                 @if (m.ordonnance) {
                   <span class="badge bg-danger">Oui</span>
@@ -70,7 +70,7 @@
               @if (auth.estAdmin()) {
                 <td>
                   <a class="btn btn-danger btn-sm me-1" (click)="supprimer(m)">Supprimer</a>
-                  <a class="btn btn-success btn-sm" [routerLink]="['/add-medicament', m.id]">Modifier</a>
+                  <a class="btn btn-success btn-sm" [routerLink]="['/add-medicament', m.id || m.idMedicament]">Modifier</a>
                 </td>
               }
             </tr>

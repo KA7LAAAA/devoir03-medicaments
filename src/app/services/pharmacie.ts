@@ -1,100 +1,65 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Medicament } from '../model/model-medicament';
 import { Categorie } from '../model/categorie.model';
+import { CategorieWrapper } from '../model/categorie-wrapper.model';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class Pharmacie {
-  tab_medicament: Medicament[] = [
-    { id: 1, nom: "Doliprane", categorie: "Antalgique",
-      dateExpiration: new Date("08/30/2027"), prixMillimes: 2500,
-      ordonnance: false, stock: 120 },
-    { id: 2, nom: "Amoxicilline", categorie: "Antibiotique",
-      dateExpiration: new Date("03/15/2027"), prixMillimes: 7800,
-      ordonnance: true, stock: 55 },
-    { id: 3, nom: "Ventoline", categorie: "Bronchodilatateur",
-      dateExpiration: new Date("11/01/2027"), prixMillimes: 6200,
-      ordonnance: true, stock: 35 },
-    { id: 4, nom: "Smecta", categorie: "Antidiarrhéique",
-      dateExpiration: new Date("05/20/2028"), prixMillimes: 4300,
-      ordonnance: false, stock: 60 },
-    { id: 5, nom: "Aspegic", categorie: "Antalgique",
-      dateExpiration: new Date("01/10/2028"), prixMillimes: 3100,
-      ordonnance: false, stock: 80 }
-  ];
+  apiURL: string = 'http://localhost:8080/medicaments/api';
+  apiURLCat: string = 'http://localhost:8080/medicaments/cat';
 
-  categories: Categorie[] = [
-    { idCat: 1, nomCat: "Antalgique" },
-    { idCat: 2, nomCat: "Antibiotique" },
-    { idCat: 3, nomCat: "Anti-inflammatoire" },
-    { idCat: 4, nomCat: "Bronchodilatateur" },
-    { idCat: 5, nomCat: "Antidiarrhéique" },
-    { idCat: 6, nomCat: "Vitamine" }
-  ];
+  constructor(private http: HttpClient) { }
 
-  // Gestion des médicaments
-  listMedicaments(): Medicament[] {
-    return this.tab_medicament;
+  listMedicaments(): Observable<Medicament[]> {
+    return this.http.get<Medicament[]>(this.apiURL);
   }
 
-  getMedicament(id: number): Medicament | undefined {
-    return this.tab_medicament.find(m => m.id === id);
+  getMedicament(id: number): Observable<Medicament> {
+    const url = `${this.apiURL}/${id}`;
+    return this.http.get<Medicament>(url);
   }
 
-  nextId(): number {
-    return this.tab_medicament.length > 0
-      ? Math.max(...this.tab_medicament.map(m => m.id)) + 1
-      : 1;
+  addMedicament(m: Medicament): Observable<Medicament> {
+    return this.http.post<Medicament>(this.apiURL, m, httpOptions);
   }
 
-  addMedicament(m: Medicament) {
-    this.tab_medicament.push(m);
+  updateMedicament(m: Medicament): Observable<Medicament> {
+    return this.http.put<Medicament>(this.apiURL, m, httpOptions);
   }
 
-  updateMedicament(m: Medicament) {
-    const pos = this.tab_medicament.findIndex(x => x.id === m.id);
-    if (pos !== -1) {
-      this.tab_medicament[pos] = m;
-    }
+  delMedicament(id: number): Observable<any> {
+    const url = `${this.apiURL}/${id}`;
+    return this.http.delete(url, httpOptions);
   }
 
-  delMedicament(m: Medicament) {
-    const pos = this.tab_medicament.indexOf(m);
-    if (pos !== -1) {
-      this.tab_medicament.splice(pos, 1);
-    }
+  listeCategories(): Observable<CategorieWrapper> {
+    return this.http.get<CategorieWrapper>(this.apiURLCat);
   }
 
-  // Gestion des catégories (CRUD en mémoire selon Devoir 10 / Mini Projet sprint 02)
-  listeCategories(): Categorie[] {
-    return this.categories;
+  rechercherParCategorie(idCat: number): Observable<Medicament[]> {
+    const url = `${this.apiURL}/medscat/${idCat}`;
+    return this.http.get<Medicament[]>(url);
   }
 
-  consulterCategorie(id: number): Categorie | undefined {
-    return this.categories.find(c => c.idCat === id);
+  ajouterCategorie(cat: Categorie): Observable<Categorie> {
+    return this.http.post<Categorie>(this.apiURLCat, cat, httpOptions);
   }
 
-  ajouterCategorie(cat: Categorie): Categorie {
-    const nextIdCat = this.categories.length > 0
-      ? Math.max(...this.categories.map(c => c.idCat)) + 1
-      : 1;
-    cat.idCat = nextIdCat;
-    this.categories.push(cat);
-    return cat;
+  updateCategorie(cat: Categorie): Observable<Categorie> {
+    const url = `${this.apiURLCat}/${cat.idCat}`;
+    return this.http.put<Categorie>(url, cat, httpOptions);
   }
 
-  updateCategorie(cat: Categorie) {
-    const pos = this.categories.findIndex(c => c.idCat === cat.idCat);
-    if (pos !== -1) {
-      this.categories[pos] = cat;
-    }
-  }
-
-  supprimerCategorie(cat: Categorie) {
-    const pos = this.categories.indexOf(cat);
-    if (pos !== -1) {
-      this.categories.splice(pos, 1);
-    }
+  supprimerCategorie(idCat: number): Observable<any> {
+    const url = `${this.apiURLCat}/${idCat}`;
+    return this.http.delete(url, httpOptions);
   }
 }

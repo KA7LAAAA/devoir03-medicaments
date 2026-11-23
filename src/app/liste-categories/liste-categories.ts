@@ -12,7 +12,7 @@ import { Auth } from '../services/auth';
   styleUrl: './liste-categories.css'
 })
 export class ListeCategoriesComponent implements OnInit {
-  categories!: Categorie[];
+  categories: Categorie[] = [];
   updatedCat: Categorie = { "idCat": 0, "nomCat": "" };
   ajout: boolean = true;
 
@@ -23,17 +23,27 @@ export class ListeCategoriesComponent implements OnInit {
   }
 
   chargerCategories() {
-    this.categories = this.pharmacie.listeCategories();
+    this.pharmacie.listeCategories().subscribe({
+      next: (res) => {
+        this.categories = res._embedded.categories;
+      },
+      error: (err) => console.log('Erreur chargement categories :', err)
+    });
   }
 
   categorieUpdated(cat: Categorie) {
     console.log("Cat updated event", cat);
     if (this.ajout) {
-      this.pharmacie.ajouterCategorie({ ...cat });
+      this.pharmacie.ajouterCategorie({ ...cat }).subscribe({
+        next: () => this.chargerCategories(),
+        error: (err) => console.log('Erreur ajout categorie :', err)
+      });
     } else {
-      this.pharmacie.updateCategorie({ ...cat });
+      this.pharmacie.updateCategorie({ ...cat }).subscribe({
+        next: () => this.chargerCategories(),
+        error: (err) => console.log('Erreur modification categorie :', err)
+      });
     }
-    this.chargerCategories();
     // Réinitialiser le formulaire
     this.updatedCat = { "idCat": 0, "nomCat": "" };
     this.ajout = true;
@@ -46,8 +56,10 @@ export class ListeCategoriesComponent implements OnInit {
 
   supprimerCat(cat: Categorie) {
     if (confirm("Supprimer la catégorie " + cat.nomCat + " ?")) {
-      this.pharmacie.supprimerCategorie(cat);
-      this.chargerCategories();
+      this.pharmacie.supprimerCategorie(cat.idCat).subscribe({
+        next: () => this.chargerCategories(),
+        error: (err) => console.log('Erreur suppression categorie :', err)
+      });
     }
   }
 }

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Medicament } from '../model/model-medicament';
+import { Categorie } from '../model/categorie.model';
 import { Pharmacie } from '../services/pharmacie';
 import { FiltreNomPipe } from '../pipes/filtre-nom-pipe';
 import { Auth } from '../services/auth';
@@ -13,29 +14,48 @@ import { Auth } from '../services/auth';
   templateUrl: './medicaments.html',
   styleUrl: './medicaments.css'
 })
-export class Medicaments {
-  tab_medicament: Medicament[];
-  tab_filtre: Medicament[];
-  tab_categorie: string[];
+export class Medicaments implements OnInit {
+  tab_medicament: Medicament[] = [];
+  tab_filtre: Medicament[] = [];
+  tab_categorie: string[] = [];
+  categories: Categorie[] = [];
 
   categorieChoisie: string = '';
-  rechercheNom: string = '';    // recherche avec keyup
-  recherchePipe: string = '';   // recherche avec le pipe
-
-  // type de recherche sélectionné : 'types' | 'keyup' | 'pipe' | ''
+  rechercheNom: string = '';
+  recherchePipe: string = '';
   typeRecherche: string = '';
 
-  constructor(private p: Pharmacie, public auth: Auth, private route: ActivatedRoute) {
-    this.tab_medicament = p.listMedicaments();
-    this.tab_categorie = this.p.listeCategories().map(c => c.nomCat);
-    this.tab_filtre = this.tab_medicament;
+  constructor(private p: Pharmacie, public auth: Auth, private route: ActivatedRoute) { }
 
-    // Écouter les query params au cas où on arrive avec ?type=...
+  ngOnInit(): void {
+    this.chargerMedicaments();
+    this.chargerCategories();
+
     this.route.queryParams.subscribe(params => {
       if (params['type']) {
         this.typeRecherche = params['type'];
         this.onTypeRechercheChange();
       }
+    });
+  }
+
+  chargerMedicaments() {
+    this.p.listMedicaments().subscribe({
+      next: (meds) => {
+        this.tab_medicament = meds;
+        this.tab_filtre = meds;
+      },
+      error: (err) => console.log('Erreur chargement medicaments :', err)
+    });
+  }
+
+  chargerCategories() {
+    this.p.listeCategories().subscribe({
+      next: (cats) => {
+        this.categories = cats._embedded.categories;
+        this.tab_categorie = this.categories.map(c => c.nomCat);
+      },
+      error: (err) => console.log('Erreur chargement categories :', err)
     });
   }
 
@@ -46,13 +66,12 @@ export class Medicaments {
     this.tab_filtre = this.tab_medicament;
   }
 
-  // Recherche par catégorie
   choisirCategorie(event: Event) {
-    this.categorieChoisie = (event.target as HTMLSelectElement).value;
+    const val = (event.target as HTMLSelectElement).value;
+    this.categorieChoisie = val;
     this.appliquerFiltres();
   }
 
-  // Recherche par nom (keyup)
   rechercherNom(event: Event) {
     this.rechercheNom = (event.target as HTMLInputElement).value;
     this.appliquerFiltres();
@@ -60,10 +79,13 @@ export class Medicaments {
 
   appliquerFiltres() {
     const texte = this.rechercheNom.toLowerCase().trim();
-    this.tab_filtre = this.tab_medicament.filter(m =>
-      (this.categorieChoisie === '' || m.categorie === this.categorieChoisie) &&
-      m.nom.toLowerCase().includes(texte)
-    );
+    this.tab_filtre = this.tab_medicament.filter(m => {
+      const nom = (m.nom || m.nomMedicament || '').toLowerCase();
+      const catName = typeof m.categorie === 'object' && m.categorie ? m.categorie.nomCat : m.categorie;
+      const matchCat = this.categorieChoisie === '' || catName === this.categorieChoisie;
+      const matchNom = nom.includes(texte);
+      return matchCat && matchNom;
+    });
   }
 
   convertPrix(m: number): string {
@@ -73,9 +95,13 @@ export class Medicaments {
   }
 
   supprimer(m: Medicament) {
-    if (confirm('Supprimer le médicament ' + m.nom + ' ?')) {
-      this.p.delMedicament(m);
-      this.appliquerFiltres();
+    const nom = m.nom || m.nomMedicament;
+    const id = m.id || m.idMedicament;
+    if (confirm('Supprimer le médicament ' + nom + ' ?')) {
+      this.p.delMedicament(id!).subscribe({
+        next: () => this.chargerMedicaments(),
+        error: (err) => console.log('Erreur suppression :', err)
+      });
     }
   }
 }

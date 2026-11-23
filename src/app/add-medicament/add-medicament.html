@@ -6,7 +6,7 @@
   <form (ngSubmit)="enregistrer()">
     <div class="col-sm-2 col-md-2 col-lg-2 mb-2">
       <label>ID Médicament</label>
-      <input type="text" [(ngModel)]="newMedicament.id" name="id" class="form-control" readonly>
+      <input type="text" [value]="newMedicament.id || newMedicament.idMedicament || 'Auto'" class="form-control" readonly>
     </div>
 
     <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
@@ -26,9 +26,9 @@
 
     <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
       <label>Catégorie</label>
-      <select class="form-control form-control-lg" name="categorie" [(ngModel)]="newMedicament.categorie">
-        @for (c of tab_categorie; track c) {
-          <option [value]="c">{{ c }}</option>
+      <select class="form-control form-control-lg" name="idCat" [(ngModel)]="newIdCat">
+        @for (c of categories; track c.idCat) {
+          <option [value]="c.idCat">{{ c.nomCat }}</option>
         }
       </select>
     </div>
