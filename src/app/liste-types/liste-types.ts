@@ -25,7 +25,7 @@ export class ListeTypesComponent implements OnInit {
   chargerTypes() {
     this.pharmacie.listeTypes().subscribe({
       next: (res) => {
-        this.types = res._embedded.types || res._embedded.categories || [];
+        this.types = res._embedded?.types || res._embedded?.typeses || res._embedded?.categories || [];
       },
       error: (err) => console.log('Erreur chargement types :', err)
     });

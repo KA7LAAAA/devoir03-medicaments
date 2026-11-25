@@ -60,7 +60,7 @@ export class AddMedicament implements OnInit {
   chargerTypes() {
     this.p.listeTypes().subscribe({
       next: (res) => {
-        this.types = res._embedded?.types || res._embedded?.categories || [];
+        this.types = res._embedded?.types || res._embedded?.typeses || res._embedded?.categories || [];
         if (!this.modeModification && this.types.length > 0 && !this.newIdType) {
           const premier = this.types[0];
           this.newIdType = premier.idTypes || premier.idType || premier.idCat;

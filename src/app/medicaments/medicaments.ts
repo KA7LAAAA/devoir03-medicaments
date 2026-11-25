@@ -52,7 +52,7 @@ export class Medicaments implements OnInit {
   chargerTypes() {
     this.p.listeTypes().subscribe({
       next: (res) => {
-        this.types = res._embedded?.types || res._embedded?.categories || [];
+        this.types = res._embedded?.types || res._embedded?.typeses || res._embedded?.categories || [];
         this.tab_types = this.types.map(t => t.nomTypes || t.nomCat || t.nomType || '');
       },
       error: (err) => console.log('Erreur chargement types :', err)
