@@ -25,10 +25,10 @@
     </div>
 
     <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
-      <label>Catégorie</label>
-      <select class="form-control form-control-lg" name="idCat" [(ngModel)]="newIdCat">
-        @for (c of categories; track c.idCat) {
-          <option [value]="c.idCat">{{ c.nomCat }}</option>
+      <label>Types</label>
+      <select class="form-control form-control-lg" name="idType" [(ngModel)]="newIdType">
+        @for (t of types; track (t.idTypes || t.idCat || t.idType)) {
+          <option [value]="t.idTypes || t.idCat || t.idType">{{ t.nomTypes || t.nomCat || t.nomType }}</option>
         }
       </select>
     </div>

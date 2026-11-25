@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Medicament } from '../model/model-medicament';
-import { Categorie } from '../model/categorie.model';
+import { Types } from '../model/types.model';
 import { Pharmacie } from '../services/pharmacie';
 import { Auth } from '../services/auth';
 
@@ -17,8 +17,8 @@ export class AddMedicament implements OnInit {
   newMedicament: Medicament = new Medicament();
   dateStr: string = '';
   modeModification: boolean = false;
-  categories: Categorie[] = [];
-  newIdCat?: number;
+  types: Types[] = [];
+  newIdType?: number;
 
   constructor(
     private p: Pharmacie,
@@ -28,7 +28,7 @@ export class AddMedicament implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.chargerCategories();
+    this.chargerTypes();
 
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
@@ -44,8 +44,9 @@ export class AddMedicament implements OnInit {
             const d = new Date(med.dateExpiration);
             this.dateStr = this.versChaineDate(d);
           }
-          if (med.categorie && typeof med.categorie === 'object') {
-            this.newIdCat = med.categorie.idCat;
+          const t = med.type || med.types || med.categorie;
+          if (t && typeof t === 'object') {
+            this.newIdType = t.idTypes || t.idType || t.idCat;
           }
         },
         error: (err) => console.log('Erreur chargement medicament :', err)
@@ -56,15 +57,16 @@ export class AddMedicament implements OnInit {
     }
   }
 
-  chargerCategories() {
-    this.p.listeCategories().subscribe({
-      next: (cats) => {
-        this.categories = cats._embedded.categories;
-        if (!this.modeModification && this.categories.length > 0 && !this.newIdCat) {
-          this.newIdCat = this.categories[0].idCat;
+  chargerTypes() {
+    this.p.listeTypes().subscribe({
+      next: (res) => {
+        this.types = res._embedded?.types || res._embedded?.categories || [];
+        if (!this.modeModification && this.types.length > 0 && !this.newIdType) {
+          const premier = this.types[0];
+          this.newIdType = premier.idTypes || premier.idType || premier.idCat;
         }
       },
-      error: (err) => console.log('Erreur chargement categories :', err)
+      error: (err) => console.log('Erreur chargement types :', err)
     });
   }
 
@@ -90,9 +92,12 @@ export class AddMedicament implements OnInit {
     this.newMedicament.prixMillimes = prix;
     this.newMedicament.prixMedicament = prix;
 
-    if (this.newIdCat) {
-      const catTrouvee = this.categories.find(c => c.idCat == this.newIdCat);
-      this.newMedicament.categorie = catTrouvee || { idCat: this.newIdCat, nomCat: '' };
+    if (this.newIdType) {
+      const typeTrouve = this.types.find(t => (t.idTypes || t.idType || t.idCat) == this.newIdType);
+      const val = typeTrouve || { idTypes: this.newIdType, nomTypes: '' };
+      this.newMedicament.type = val;
+      this.newMedicament.types = val;
+      this.newMedicament.categorie = val;
     }
 
     if (this.newMedicament.stock == null) {

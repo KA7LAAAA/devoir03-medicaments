@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { Medicament } from '../model/model-medicament';
-import { Categorie } from '../model/categorie.model';
+import { Types } from '../model/types.model';
 import { Pharmacie } from '../services/pharmacie';
 import { FiltreNomPipe } from '../pipes/filtre-nom-pipe';
 import { Auth } from '../services/auth';
@@ -17,10 +17,10 @@ import { Auth } from '../services/auth';
 export class Medicaments implements OnInit {
   tab_medicament: Medicament[] = [];
   tab_filtre: Medicament[] = [];
-  tab_categorie: string[] = [];
-  categories: Categorie[] = [];
+  tab_types: string[] = [];
+  types: Types[] = [];
 
-  categorieChoisie: string = '';
+  typeChoisi: string = '';
   rechercheNom: string = '';
   recherchePipe: string = '';
   typeRecherche: string = '';
@@ -29,7 +29,7 @@ export class Medicaments implements OnInit {
 
   ngOnInit(): void {
     this.chargerMedicaments();
-    this.chargerCategories();
+    this.chargerTypes();
 
     this.route.queryParams.subscribe(params => {
       if (params['type']) {
@@ -49,26 +49,26 @@ export class Medicaments implements OnInit {
     });
   }
 
-  chargerCategories() {
-    this.p.listeCategories().subscribe({
-      next: (cats) => {
-        this.categories = cats._embedded.categories;
-        this.tab_categorie = this.categories.map(c => c.nomCat);
+  chargerTypes() {
+    this.p.listeTypes().subscribe({
+      next: (res) => {
+        this.types = res._embedded?.types || res._embedded?.categories || [];
+        this.tab_types = this.types.map(t => t.nomTypes || t.nomCat || t.nomType || '');
       },
-      error: (err) => console.log('Erreur chargement categories :', err)
+      error: (err) => console.log('Erreur chargement types :', err)
     });
   }
 
   onTypeRechercheChange() {
-    this.categorieChoisie = '';
+    this.typeChoisi = '';
     this.rechercheNom = '';
     this.recherchePipe = '';
     this.tab_filtre = this.tab_medicament;
   }
 
-  choisirCategorie(event: Event) {
+  choisirType(event: Event) {
     const val = (event.target as HTMLSelectElement).value;
-    this.categorieChoisie = val;
+    this.typeChoisi = val;
     this.appliquerFiltres();
   }
 
@@ -81,10 +81,11 @@ export class Medicaments implements OnInit {
     const texte = this.rechercheNom.toLowerCase().trim();
     this.tab_filtre = this.tab_medicament.filter(m => {
       const nom = (m.nom || m.nomMedicament || '').toLowerCase();
-      const catName = typeof m.categorie === 'object' && m.categorie ? m.categorie.nomCat : m.categorie;
-      const matchCat = this.categorieChoisie === '' || catName === this.categorieChoisie;
+      const typeObj = m.type || m.types || m.categorie;
+      const typeName = typeof typeObj === 'object' && typeObj ? (typeObj.nomTypes || typeObj.nomCat || typeObj.nomType) : typeObj;
+      const matchType = this.typeChoisi === '' || typeName === this.typeChoisi;
       const matchNom = nom.includes(texte);
-      return matchCat && matchNom;
+      return matchType && matchNom;
     });
   }
 

@@ -1,19 +1,19 @@
 <div class="container mt-4">
 
-  <!-- Recherche par catégorie (style professeur rechercheParCategorie) -->
+  <!-- Recherche par types -->
   @if (typeRecherche === 'types') {
     <div class="col-sm-4 col-md-4 col-lg-4 mb-4">
-      <label class="form-label fw-bold">Catégories</label>
-      <select class="form-control form-control-lg" (change)="choisirCategorie($event)">
-        <option value="">Toutes les catégories</option>
-        @for (c of tab_categorie; track c) {
-          <option [value]="c">{{ c }}</option>
+      <label class="form-label fw-bold">Types</label>
+      <select class="form-control form-control-lg" (change)="choisirType($event)">
+        <option value="">Tous les types</option>
+        @for (t of tab_types; track t) {
+          <option [value]="t">{{ t }}</option>
         }
       </select>
     </div>
   }
 
-  <!-- Recherche par nom en tapant (style professeur rechercheParNom) -->
+  <!-- Recherche par nom en tapant (keyup) -->
   @if (typeRecherche === 'keyup') {
     <form class="form-inline mb-3">
       <div class="form-group col-sm-4 col-md-4 col-lg-4 mb-3">
@@ -23,7 +23,7 @@
     </form>
   }
 
-  <!-- Recherche par nom avec pipe (style professeur searchFilter) -->
+  <!-- Recherche par nom avec pipe -->
   @if (typeRecherche === 'pipe') {
     <form class="form-inline mb-3">
       <div class="form-group col-sm-4 col-md-4 col-lg-4 mb-3">
@@ -33,7 +33,7 @@
     </form>
   }
 
-  <!-- Tableau des médicaments (style professeur produits) -->
+  <!-- Tableau des médicaments -->
   <div class="card shadow mb-4">
     <div class="card-body">
       <table class="table table-striped">
@@ -41,7 +41,7 @@
           <tr>
             <th>Id</th>
             <th>Nom</th>
-            <th>Catégorie</th>
+            <th>Type</th>
             <th>Date d'expiration</th>
             <th>Prix</th>
             <th>Ordonnance</th>
@@ -56,7 +56,7 @@
             <tr>
               <td>{{ m.id || m.idMedicament }}</td>
               <td>{{ (m.nom || m.nomMedicament) | uppercase }}</td>
-              <td>{{ m.categorie?.nomCat || m.categorie }}</td>
+              <td>{{ (m.type?.nomTypes || m.types?.nomTypes || m.categorie?.nomCat || m.type || m.categorie) }}</td>
               <td>{{ m.dateExpiration | date:'dd/MM/yyyy' }}</td>
               <td>{{ convertPrix(m.prixMillimes || m.prixMedicament || 0) }}</td>
               <td>

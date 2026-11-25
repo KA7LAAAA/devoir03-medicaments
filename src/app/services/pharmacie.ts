@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Medicament } from '../model/model-medicament';
-import { Categorie } from '../model/categorie.model';
-import { CategorieWrapper } from '../model/categorie-wrapper.model';
+import { Types } from '../model/types.model';
+import { TypesWrapper } from '../model/types-wrapper.model';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -14,7 +14,7 @@ const httpOptions = {
 })
 export class Pharmacie {
   apiURL: string = 'http://localhost:8090/medicaments/api';
-  apiURLCat: string = 'http://localhost:8090/medicaments/cat';
+  apiURLTypes: string = 'http://localhost:8090/medicaments/types';
 
   constructor(private http: HttpClient) { }
 
@@ -40,26 +40,48 @@ export class Pharmacie {
     return this.http.delete(url, httpOptions);
   }
 
-  listeCategories(): Observable<CategorieWrapper> {
-    return this.http.get<CategorieWrapper>(this.apiURLCat);
+  listeTypes(): Observable<TypesWrapper> {
+    return this.http.get<TypesWrapper>(this.apiURLTypes);
   }
 
-  rechercherParCategorie(idCat: number): Observable<Medicament[]> {
-    const url = `${this.apiURL}/medscat/${idCat}`;
+  // Alias compatibilité
+  listeCategories(): Observable<TypesWrapper> {
+    return this.listeTypes();
+  }
+
+  rechercherParType(idTypes: number): Observable<Medicament[]> {
+    const url = `${this.apiURL}/medstypes/${idTypes}`;
     return this.http.get<Medicament[]>(url);
   }
 
-  ajouterCategorie(cat: Categorie): Observable<Categorie> {
-    return this.http.post<Categorie>(this.apiURLCat, cat, httpOptions);
+  rechercherParCategorie(idCat: number): Observable<Medicament[]> {
+    return this.rechercherParType(idCat);
   }
 
-  updateCategorie(cat: Categorie): Observable<Categorie> {
-    const url = `${this.apiURLCat}/${cat.idCat}`;
-    return this.http.put<Categorie>(url, cat, httpOptions);
+  ajouterType(t: Types): Observable<Types> {
+    return this.http.post<Types>(this.apiURLTypes, t, httpOptions);
+  }
+
+  ajouterCategorie(cat: Types): Observable<Types> {
+    return this.ajouterType(cat);
+  }
+
+  updateType(t: Types): Observable<Types> {
+    const id = t.idTypes || t.idType || t.idCat;
+    const url = `${this.apiURLTypes}/${id}`;
+    return this.http.put<Types>(url, t, httpOptions);
+  }
+
+  updateCategorie(cat: Types): Observable<Types> {
+    return this.updateType(cat);
+  }
+
+  supprimerType(idTypes: number): Observable<any> {
+    const url = `${this.apiURLTypes}/${idTypes}`;
+    return this.http.delete(url, httpOptions);
   }
 
   supprimerCategorie(idCat: number): Observable<any> {
-    const url = `${this.apiURLCat}/${idCat}`;
-    return this.http.delete(url, httpOptions);
+    return this.supprimerType(idCat);
   }
 }

@@ -1,0 +1,22 @@
+<form>
+  <div class="col-sm-4 col-md-4 col-lg-4 mb-2">
+    <label>ID Type</label>
+    <input type="text" [(ngModel)]="type.idTypes" name="idTypes" class="form-control" readonly>
+  </div>
+
+  <div class="col-sm-8 col-md-8 col-lg-8 mb-2">
+    <label>Nom Type</label>
+    <input type="text" [(ngModel)]="type.nomTypes" name="nomTypes" class="form-control" placeholder="Entrez le nom du type">
+  </div>
+
+  <div class="col-sm-8 col-md-8 col-lg-8 mb-3">
+    <label>Description Type</label>
+    <input type="text" [(ngModel)]="type.descriptionTypes" name="descriptionTypes" class="form-control" placeholder="Description">
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-success" (click)="saveType()">
+      {{ ajout ? "Ajouter" : "Modifier" }}
+    </button>
+  </div>
+</form>

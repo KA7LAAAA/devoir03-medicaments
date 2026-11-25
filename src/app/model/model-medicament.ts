@@ -1,11 +1,13 @@
-import { Categorie } from './categorie.model';
+import { Types } from './types.model';
 
 export class Medicament {
   id!: number;
   idMedicament?: number;
   nom!: string;
   nomMedicament?: string;
-  categorie!: Categorie | string | any;
+  type!: Types | string | any;
+  types?: Types | string | any;
+  categorie?: Types | string | any;
   dateExpiration!: Date;
   prixMillimes!: number;
   prixMedicament?: number;

@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <div class="card shadow mb-4">
+    <div class="card-body">
+
+      @if (auth.estAdmin()) {
+        <div class="col-sm-6 col-md-6 col-lg-6 mb-4">
+          <app-update-types
+            [type]="updatedType"
+            (typeUpdated)="typeUpdated($event)"
+            [ajout]="ajout">
+          </app-update-types>
+        </div>
+      }
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nom Type</th>
+            @if (auth.estAdmin()) {
+              <th>Action</th>
+            }
+          </tr>
+        </thead>
+        @for (t of types; track (t.idTypes || t.idCat || t.idType)) {
+          <tbody>
+            <tr>
+              <td>{{ t.idTypes || t.idCat || t.idType }}</td>
+              <td>{{ t.nomTypes || t.nomCat || t.nomType }}</td>
+              @if (auth.estAdmin()) {
+                <td>
+                  <a class="btn btn-success btn-sm me-2" (click)="updateType(t)">Editer</a>
+                  <button class="btn btn-danger btn-sm" (click)="supprimerType(t)">Supprimer</button>
+                </td>
+              }
+            </tr>
+          </tbody>
+        }
+      </table>
+
+    </div>
+  </div>
+</div>
